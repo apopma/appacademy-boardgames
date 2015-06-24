@@ -1,0 +1,17 @@
+GEM
+  specs:
+    byebug (3.5.1)
+      columnize (~> 0.8)
+      debugger-linecache (~> 1.2)
+      slop (~> 3.6)
+    colorize (0.7.7)
+    columnize (0.8.9)
+    debugger-linecache (1.2.0)
+    slop (3.6.0)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  byebug
+  colorize
