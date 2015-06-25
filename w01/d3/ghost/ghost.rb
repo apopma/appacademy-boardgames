@@ -57,7 +57,7 @@ class GhostGame
     possible_new_fragment = fragment + string
 
     result = ("a".."z").to_a.include?(string) &&
-      dictionary.any? { |word| word.include?(possible_new_fragment) }
+      dictionary.any? { |word| word.start_with?(possible_new_fragment) }
 
     unless result
       puts "#{possible_new_fragment} isn't in the dictionary. Try again!"
@@ -70,7 +70,10 @@ class GhostGame
 
   private
   def take_turn(player)
-    @current_guess = player.guess until valid_play?(current_guess)
+    until valid_play?(current_guess)
+      print "(#{fragment}) "
+      @current_guess = player.guess
+    end
     add_to_fragment(current_guess)
     @current_guess = ''
 
@@ -127,4 +130,3 @@ if __FILE__ == $PROGRAM_NAME
 
   GhostGame.new(players).run
 end
-
