@@ -8,6 +8,11 @@ class PolyTreeNode
     @children = []
   end
 
+  def inspect
+    parent_value = parent ? parent.value : "nil!"
+    "<PolyTreeNode: #{@value} | parent: #{parent_value}> \n"
+  end
+
   def parent=(new_parent)
     if new_parent.nil?
       @parent = nil
@@ -29,6 +34,19 @@ class PolyTreeNode
   def remove_child(child)
     child.parent = nil
     raise "Node is not this node's child" unless self.children.include?(child)
+  end
+
+  def trace_path_back
+    ancestry = []
+    current_node = self
+
+    until current_node.parent.nil?
+      ancestry.unshift(current_node.value)
+      current_node = current_node.parent
+    end
+
+    ancestry.unshift(current_node.value) #root node
+    ancestry
   end
 
   def dfs(target_value)
