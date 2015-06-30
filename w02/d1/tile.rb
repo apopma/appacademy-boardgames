@@ -1,4 +1,4 @@
-require 'set'
+ require 'set'
 require 'colorize'
 
 class Tile
@@ -14,14 +14,15 @@ class Tile
   COLORS = {
     0 => :default, 1 => :light_blue, 2 => :green,
     3 => :red,     4 => :purple,     5 => :blue,
-    6 => :cyan,    7 => :yellow,      8 => :magenta
+    6 => :cyan,    7 => :yellow,     8 => :magenta
   }
 
   def initialize(board, pos)
     @board = board
+    @pos = pos
+
     @seen = false
     @mine = false
-    @pos = pos
     @flagged = false
   end
 
