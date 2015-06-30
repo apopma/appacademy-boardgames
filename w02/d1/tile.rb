@@ -1,4 +1,3 @@
-require 'byebug'
 require 'set'
 require 'colorize'
 
@@ -15,7 +14,7 @@ class Tile
   COLORS = {
     0 => :default, 1 => :light_blue, 2 => :green,
     3 => :red,     4 => :purple,     5 => :blue,
-    6 => :cyan,    7 => :black,      8 => :magenta
+    6 => :cyan,    7 => :yellow,      8 => :magenta
   }
 
   def initialize(board, pos)
@@ -31,7 +30,6 @@ class Tile
       @seen = true # non-mines are revealed within reveal_neighbors
       return
     end
-
     reveal_neighbors
   end
 
