@@ -1,4 +1,4 @@
- require 'set'
+require 'set'
 require 'colorize'
 
 class Tile
