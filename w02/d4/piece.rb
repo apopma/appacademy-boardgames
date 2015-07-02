@@ -4,7 +4,7 @@ require 'colorize'
  JUMP_DIFFS = { :red => [[2, 2],  [2, -2]], :black => [[-2, 2], [-2, -2]] }
 
 class Piece
-  attr_reader :color, :id
+  attr_reader :color, :id, :king_row
   attr_accessor :location, :board, :king
 
   def initialize(location, board, color, king = false)
@@ -12,6 +12,7 @@ class Piece
     @board = board
     @color = color # either :red or :black
     @king = king
+    @king_row = (color == :black) ? 0 : 7
     @id = "●"
   end
 
@@ -66,6 +67,10 @@ class Piece
     board.remove_piece(between_piece.location)
   end
 
+  def perform_moves(*move_seq)
+    perform_moves!(*move_seq) if valid_move_seq?(*move_seq)
+  end
+
   def perform_moves!(*move_seq)
     origin = self.location
 
@@ -91,13 +96,13 @@ class Piece
       duped_piece = duped_board[location]
       duped_piece.perform_moves!(*move_seq) #needs the splat also
     rescue IllegalMoveError
-      puts "Not a valid sequence!"
+      # puts "Not a valid sequence!"
       return false
     ensure
-      puts "Done with move checking."
+      # puts "Done with move checking."
     end
 
-    puts "Valid!"
+    # puts "Valid!"
     true
   end
 

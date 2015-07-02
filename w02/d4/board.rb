@@ -23,7 +23,7 @@ class Board
   end
 
   def render
-    #system("clear")
+    system("clear")
     grid.each_with_index do |row, ridx|
       row.each_with_index do |elem, cidx|
         print_elem(elem, ridx, cidx)
@@ -91,6 +91,5 @@ b[[2, 5]] = r3
 b.render
 
 sleep(0.5)
-p b1.valid_move_seq?([5, 2], [3, 4], [1, 6])
-# b1.perform_moves!([5, 2], [3, 4], [1, 6])
+b1.perform_moves([5, 2], [3, 4], [1, 6])
 b.render
