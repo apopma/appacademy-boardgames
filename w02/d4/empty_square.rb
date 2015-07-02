@@ -3,6 +3,10 @@ class EmptySquare
     " "
   end
 
+  def location
+    "nowhere"
+  end
+
   def empty?
     true
   end
@@ -20,10 +24,10 @@ class EmptySquare
   end
 
   def inspect
-    "empty square"
+    "`"
   end
 
-  def dup
+  def dup(_)
     self #EmptySquare.new if this breaks
   end
 end

@@ -1,6 +1,6 @@
 require 'colorize'
 
- MOVE_DIFFS = { :red => [[-1, 1], [1, -1]], :black => [[1, 1],  [-1, -1]] }
+ MOVE_DIFFS = { :red => [[1, 1], [1, -1]], :black => [[-1, 1],  [-1, -1]] }
  JUMP_DIFFS = { :red => [[2, 2],  [2, -2]], :black => [[-2, 2], [-2, -2]] }
 
 class Piece
@@ -45,7 +45,7 @@ class Piece
     board[destination] = self
   end
 
-  def perform_slide(destination) #doesn't really need an origin?
+  def perform_slide(destination)
     unless moves(:sliding).include?(destination)
       raise IllegalMoveError, "\n#{self.inspect} can't move to #{destination}!"
     end
@@ -66,9 +66,37 @@ class Piece
     board.remove_piece(between_piece.location)
   end
 
-  def perform_moves!(move_seq)
+  def perform_moves!(*move_seq)
+    #move seq is an array of destination pos
     p "performing #{move_seq}..."
+    duped_board = board.dup
+    duped_piece = duped_board[location]
+    p "#{self.inspect} should == #{duped_piece.inspect}"
 
+    until move_seq.empty?
+      current_move = move_seq.shift
+      p "Current move: #{current_move}"
+      p "Location: #{duped_piece.location}"
+      p "Piece to move: #{duped_piece.inspect}"
+      p "Possible slides: #{duped_piece.moves(:sliding)}"
+      p "Possible jumps: #{duped_piece.moves(:jumping)}"
+
+      if duped_piece.moves(:sliding).include?(current_move)
+        p "sliding to #{current_move}"
+        duped_piece.perform_slide(current_move)
+        break
+      elsif duped_piece.moves(:jumping).include?(current_move)
+        p "jumping to #{current_move}"
+        duped_piece.perform_jump(current_move)
+      else
+        raise IllegalMoveError, "orig: #{self.inspect} | duped: #{duped_piece.inspect} | dest: #{current_move}"
+      end
+
+      duped_board.render
+      sleep(1)
+    end
+
+    puts "Finished performing move sequence."
   end
 
   def valid_move?(pos)

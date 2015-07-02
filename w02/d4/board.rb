@@ -24,7 +24,7 @@ class Board
   end
 
   def render
-    system("clear")
+    #system("clear")
     grid.each_with_index do |row, ridx|
       row.each_with_index do |elem, cidx|
         print_elem(elem, ridx, cidx)
@@ -53,6 +53,8 @@ class Board
         duped_board[duped_pos] = square.dup(duped_board)
       end
     end
+
+    duped_board
   end
 
   def [](pos)
@@ -78,19 +80,17 @@ class Board
 end
 
 b = Board.new
-b.setup
-p1 = b[[2, 1]]
-p2 = b[[5, 2]]
+b1 = Piece.new([7, 0], b, :black)
+r1 = Piece.new([6, 1], b, :red)
+r2 = Piece.new([4, 3], b, :red)
+r3 = Piece.new([2, 5], b, :red)
 
-p1.perform_slide([3, 0])
-p2.perform_slide([4, 1])
+b[[7, 0]] = b1
+b[[6, 1]] = r1
+b[[4, 3]] = r2
+b[[2, 5]] = r3
 b.render
+
 sleep(0.5)
-
-b[[3, 0]].perform_jump([5, 2])
-b.render
-
-sleep(0.5)
-b[[0, 1]].king_me!
-b.render
-puts b[[0, 1]].inspect
+#b1.perform_moves!([5, 2], [3, 4], [1, 6])
+r3.perform_moves!([])
