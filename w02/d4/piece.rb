@@ -43,6 +43,7 @@ class Piece
   def move_to(destination)
     board.remove_piece(location)
     @location = destination #location is a local var without @ or self?
+    maybe_promote
     board[destination] = self
   end
 
@@ -116,6 +117,10 @@ class Piece
 
   def other_color
     color == :red ? :black : :red
+  end
+
+  def maybe_promote
+    king_me! if location.first == king_row
   end
 
   def king_me!
