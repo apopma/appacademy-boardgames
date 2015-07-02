@@ -14,4 +14,8 @@ class EmptySquare
   def move_diffs
     []
   end
+
+  def inspect
+    "empty square"
+  end
 end

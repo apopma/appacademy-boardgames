@@ -1,8 +1,8 @@
 require 'colorize'
 
  MOVE_DIFFS = {
-   :red => [[1, 1], [1, -1]],
-   :black => [[-1, 1], [-1, -1]]
+   :red => [[-1, 1], [1, -1]],
+   :black => [[1, 1], [-1, -1]]
  }
 
 class Piece
@@ -30,19 +30,29 @@ class Piece
     move_diffs.each do |diff|
       drow, dcol = diff
       new_move = [row + drow, col + dcol]
+      puts
+      p "possible new move #{new_move}"
       all_moves << new_move if valid_move?(new_move)
     end
 
     all_moves
   end
 
-  def perform_slide
+  def perform_slide(destination)
+    puts "moving #{self.color} from #{self.pos} to #{destination}..."
+    puts "possible moves #{moves}"
+    raise IllegalMoveError unless moves.include?(destination)
+    board.remove_piece(pos)
+    self.pos = destination
+    board[destination] = self
   end
 
   def perform_jump
   end
 
   def valid_move?(pos)
+    p "#{pos} on board? #{move_on_board?(pos)}"
+    p "#{board[pos]} is: #{board[pos].inspect}"
     move_on_board?(pos) && board[pos].empty?
   end
 
@@ -70,10 +80,20 @@ class Piece
   def to_s
     id.colorize(color)
   end
+
+  def inspect
+    if self.king?
+      "#{color} king at #{pos}"
+    else
+      "#{color} piece at #{pos}"
+    end
+  end
+end
+
+class IllegalMoveError < RuntimeError
 end
 
 
-# b = Board.new
 # rp = Piece.new([0, 1], b, :red)
 # bp = Piece.new([5, 2], b, :black)
 #

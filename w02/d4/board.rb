@@ -5,7 +5,8 @@ class Board
   attr_accessor :grid
 
   def initialize
-    @grid = Array.new(8) { Array.new(8) { EmptySquare.new } }
+    @blank = EmptySquare.new
+    @grid = Array.new(8) { Array.new(8) { @blank } }
   end
 
   def setup
@@ -16,6 +17,10 @@ class Board
     setup_even_row(5, :black)
     setup_odd_row(6, :black)
     setup_even_row(7, :black)
+  end
+
+  def remove_piece(pos)
+    self[pos] = @blank
   end
 
   def render
@@ -64,5 +69,8 @@ end
 
 b = Board.new
 b.setup
-b[[0, 1]].king_me!
+b.render
+
+sleep(1)
+b[[2, 1]].perform_slide([3, 0])
 b.render
