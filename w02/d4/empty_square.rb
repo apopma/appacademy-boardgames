@@ -6,4 +6,8 @@ class EmptySquare
   def king?
     false
   end
+
+  def move_diffs
+    []
+  end
 end
