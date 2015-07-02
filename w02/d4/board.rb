@@ -91,8 +91,6 @@ b[[2, 5]] = r3
 b.render
 
 sleep(0.5)
-b1.perform_moves!([5, 2], [3, 0], [1, 6])
-p "rendering..."
-sleep(1)
+p b1.valid_move_seq?([5, 2], [3, 4], [1, 6])
+# b1.perform_moves!([5, 2], [3, 4], [1, 6])
 b.render
-#r3.perform_moves!([3, 6])

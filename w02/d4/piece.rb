@@ -58,10 +58,6 @@ class Piece
     between = location.zip(destination).map { |row, col| (row + col) / 2 }
     between_piece = board[between]
 
-    p "#{between}: #{between_piece.class}"
-    p enemy?(between_piece)
-    p moves(:jumping).include?(destination)
-
     unless enemy?(between_piece) && moves(:jumping).include?(destination)
       raise IllegalMoveError, "\n#{self.inspect} can't jump to #{destination}!"
     end
@@ -75,7 +71,6 @@ class Piece
 
     until move_seq.empty?
       current_move = move_seq.shift
-      p "current move: #{current_move}"
 
       if moves(:sliding).include?(current_move)
         self.perform_slide(current_move)
@@ -88,6 +83,22 @@ class Piece
         raise IllegalMoveError, "#{self.inspect} (from #{origin}) can't get to #{current_move}!"
       end
     end
+  end
+
+  def valid_move_seq?(*move_seq)
+    begin
+      duped_board = board.dup
+      duped_piece = duped_board[location]
+      duped_piece.perform_moves!(*move_seq) #needs the splat also
+    rescue IllegalMoveError
+      puts "Not a valid sequence!"
+      return false
+    ensure
+      puts "Done with move checking."
+    end
+
+    puts "Valid!"
+    true
   end
 
   def valid_move?(pos)
