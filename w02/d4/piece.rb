@@ -12,21 +12,41 @@ class Piece
   def initialize(pos, board, color)
     @pos = pos
     @board = board
-    @color = color # one of :red or :black
+    @color = color # either :red or :black
     @king = false
-  end
-
-  def perform_slide
-
-  end
-
-  def perform_jump
   end
 
   def move_diffs
     diffs = MOVE_DIFFS[color]
     diffs += MOVE_DIFFS[other_color] if king?
     diffs
+  end
+
+  def moves
+    row, col = pos
+    all_moves = []
+
+    move_diffs.each do |diff|
+      drow, dcol = diff
+      new_move = [row + drow, col + dcol]
+      all_moves << new_move if valid_move?(new_move)
+    end
+
+    all_moves
+  end
+
+  def perform_slide
+  end
+
+  def perform_jump
+  end
+
+  def valid_move?(pos)
+    move_on_board?(pos) && board[pos].empty?
+  end
+
+  def move_on_board?(pos)
+    pos.all? { |elem| elem.between?(0, 7) }
   end
 
   def other_color
@@ -47,15 +67,17 @@ class Piece
 
 end
 
-b = Board.new
-red_man = Piece.new([0, 3], b, :red)
-black_man = Piece.new([5, 4], b, :black)
 
-p "red ordinary diffs at #{red_man.pos}: #{red_man.move_diffs}"
-p "black ordinary diffs: #{black_man.move_diffs}"
-
-red_man.king_me!
-black_man.king_me!
-
-p "red royal diffs: #{red_man.move_diffs}"
-p "black royal diffs: #{black_man.move_diffs}"
+# b = Board.new
+# rp = Piece.new([0, 1], b, :red)
+# bp = Piece.new([5, 2], b, :black)
+#
+# p "#{rp.pos} moves to #{rp.moves}"
+# p "#{bp.pos} moves to #{bp.moves}"
+#
+# rp.king_me!
+# bp.king_me!
+#
+# puts "kings:"
+# p "#{rp.pos} moves to #{rp.moves}"
+# p "#{bp.pos} moves to #{bp.moves}"
