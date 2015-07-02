@@ -68,35 +68,18 @@ class Piece
 
   def perform_moves!(*move_seq)
     #move seq is an array of destination pos
-    p "performing #{move_seq}..."
-    duped_board = board.dup
-    duped_piece = duped_board[location]
-    p "#{self.inspect} should == #{duped_piece.inspect}"
 
     until move_seq.empty?
       current_move = move_seq.shift
-      p "Current move: #{current_move}"
-      p "Location: #{duped_piece.location}"
-      p "Piece to move: #{duped_piece.inspect}"
-      p "Possible slides: #{duped_piece.moves(:sliding)}"
-      p "Possible jumps: #{duped_piece.moves(:jumping)}"
-
-      if duped_piece.moves(:sliding).include?(current_move)
-        p "sliding to #{current_move}"
-        duped_piece.perform_slide(current_move)
+      if moves(:sliding).include?(current_move)
+        self.perform_slide(current_move)
         break
-      elsif duped_piece.moves(:jumping).include?(current_move)
-        p "jumping to #{current_move}"
-        duped_piece.perform_jump(current_move)
+      elsif moves(:jumping).include?(current_move)
+        self.perform_jump(current_move)
       else
-        raise IllegalMoveError, "orig: #{self.inspect} | duped: #{duped_piece.inspect} | dest: #{current_move}"
+        raise IllegalMoveError, "#{self.inspect} can't get to #{current_move}!"
       end
-
-      duped_board.render
-      sleep(1)
     end
-
-    puts "Finished performing move sequence."
   end
 
   def valid_move?(pos)

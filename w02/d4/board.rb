@@ -92,5 +92,8 @@ b[[2, 5]] = r3
 b.render
 
 sleep(0.5)
-#b1.perform_moves!([5, 2], [3, 4], [1, 6])
-r3.perform_moves!([])
+b1.perform_moves!([5, 2], [3, 4], [1, 6])
+p "rendering..."
+sleep(1)
+b.render
+#r3.perform_moves!([3, 6])
