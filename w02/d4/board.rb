@@ -77,19 +77,3 @@ class Board
     cols.each { |col| grid[row][col] = Piece.new([row, col], self, color) }
   end
 end
-
-b = Board.new
-b1 = Piece.new([7, 0], b, :black)
-r1 = Piece.new([6, 1], b, :red)
-r2 = Piece.new([4, 3], b, :red)
-r3 = Piece.new([2, 5], b, :red)
-
-b[[7, 0]] = b1
-b[[6, 1]] = r1
-b[[4, 3]] = r2
-b[[2, 5]] = r3
-b.render
-
-sleep(0.5)
-b1.perform_moves([5, 2], [3, 4], [1, 6])
-b.render
