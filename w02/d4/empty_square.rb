@@ -11,11 +11,19 @@ class EmptySquare
     false
   end
 
+  def enemy?(_)
+    false
+  end
+
   def move_diffs
     []
   end
 
   def inspect
     "empty square"
+  end
+
+  def dup
+    self #EmptySquare.new if this breaks
   end
 end

@@ -54,13 +54,13 @@ class Piece
   end
 
   def perform_jump(piece, destination)
-    unless moves(:jumping).include?(destination)
-      raise IllegalMoveError, "\n#{self.inspect} can't jump to #{destination}!"
-    end
-
     #gets the average of origin/destination poses, then refs Board at that pos
     between = piece.location.zip(destination).map { |row, col| (row + col) / 2 }
     between_piece = board[between]
+
+    unless moves(:jumping).include?(destination) && enemy?(between_piece)
+      raise IllegalMoveError, "\n#{self.inspect} can't jump to #{destination}!"
+    end
 
     move_to(destination)
     board.remove_piece(between_piece.location)
@@ -89,6 +89,10 @@ class Piece
 
   def king?
     king ? true : false
+  end
+
+  def enemy?(other_piece)
+    self.color != other_piece.color
   end
 
   def to_s
