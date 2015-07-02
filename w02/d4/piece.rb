@@ -1,14 +1,7 @@
 require 'colorize'
 
- MOVE_DIFFS = {
-   :red => [[-1, 1], [1, -1]],
-   :black => [[1, 1], [-1, -1]]
- }
-
- JUMP_DIFFS = {
-   :red => [[2, 2], [2, -2]],
-   :black => [[-2, 2], [-2, -2]]
- }
+ MOVE_DIFFS = { :red => [[-1, 1], [1, -1]], :black => [[1, 1],  [-1, -1]] }
+ JUMP_DIFFS = { :red => [[2, 2],  [2, -2]], :black => [[-2, 2], [-2, -2]] }
 
 class Piece
   attr_reader :color, :id
@@ -34,40 +27,26 @@ class Piece
     diffs
   end
 
-  def moves
+  def moves(type)
+    raise ArgumentError unless [:sliding, :jumping].include?(type)
     row, col = location
-    all_moves = []
+    diffs = (type == :sliding) ? move_diffs : jump_diffs
 
-    move_diffs.each do |diff|
-      drow, dcol = diff
+    all_moves = diffs.map do |drow, dcol|
       new_move = [row + drow, col + dcol]
-      all_moves << new_move if valid_move?(new_move)
     end
 
-    all_moves
-  end
-
-  def jumps
-    row, col = location
-    all_jumps = []
-
-    jump_diffs.each do |diff|
-      drow, dcol = diff
-      new_move = [(row + drow), (col + dcol)]
-      all_jumps << new_move if valid_move?(new_move)
-    end
-
-    all_jumps
+    all_moves.select { |move| valid_move?(move) }
   end
 
   def move_to(destination)
     board.remove_piece(location)
-    @location = destination #local var without the self?
+    @location = destination #location is a local var without @ or self?
     board[destination] = self
   end
 
   def perform_slide(destination) #doesn't really need an origin?
-    unless moves.include?(destination)
+    unless moves(:sliding).include?(destination)
       raise IllegalMoveError, "\n#{self.inspect} can't move to #{destination}!"
     end
 
@@ -75,15 +54,13 @@ class Piece
   end
 
   def perform_jump(piece, destination)
-    unless jumps.include?(destination)
+    unless moves(:jumping).include?(destination)
       raise IllegalMoveError, "\n#{self.inspect} can't jump to #{destination}!"
     end
 
-    orow, ocol = location
-    drow, dcol = destination
-    row_diff = (drow - orow) - 1
-    col_diff = (dcol - ocol) - 1
-    between_piece = board[[(drow - row_diff), (dcol - col_diff)]]
+    #gets the average of origin/destination poses, then refs Board at that pos
+    between = piece.location.zip(destination).map { |row, col| (row + col) / 2 }
+    between_piece = board[between]
 
     move_to(destination)
     board.remove_piece(between_piece.location)
@@ -119,11 +96,7 @@ class Piece
   end
 
   def inspect
-     if self.king?
-       "#{color} king at #{location}"
-     else
-       "#{color} piece at #{location}"
-     end
+    self.king? ? "#{color} king at #{location}" : "#{color} piece at #{location}"
   end
 end
 
