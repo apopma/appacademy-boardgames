@@ -5,8 +5,7 @@ class Board
   attr_accessor :grid
 
   def initialize
-    @blank = EmptySquare.new
-    @grid = Array.new(8) { Array.new(8) { @blank } }
+    @grid = Array.new(8) { Array.new(8) { EmptySquare.new } }
   end
 
   def setup
@@ -20,7 +19,7 @@ class Board
   end
 
   def remove_piece(pos)
-    self[pos] = @blank
+    self[pos] = EmptySquare.new
   end
 
   def render
@@ -92,7 +91,7 @@ b[[2, 5]] = r3
 b.render
 
 sleep(0.5)
-b1.perform_moves!([5, 2], [3, 4], [1, 6])
+b1.perform_moves!([5, 2], [3, 0], [1, 6])
 p "rendering..."
 sleep(1)
 b.render

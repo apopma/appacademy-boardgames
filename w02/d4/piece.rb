@@ -58,7 +58,11 @@ class Piece
     between = location.zip(destination).map { |row, col| (row + col) / 2 }
     between_piece = board[between]
 
-    unless moves(:jumping).include?(destination) && enemy?(between_piece)
+    p "#{between}: #{between_piece.class}"
+    p enemy?(between_piece)
+    p moves(:jumping).include?(destination)
+
+    unless enemy?(between_piece) && moves(:jumping).include?(destination)
       raise IllegalMoveError, "\n#{self.inspect} can't jump to #{destination}!"
     end
 
@@ -67,17 +71,21 @@ class Piece
   end
 
   def perform_moves!(*move_seq)
-    #move seq is an array of destination pos
+    origin = self.location
 
     until move_seq.empty?
       current_move = move_seq.shift
+      p "current move: #{current_move}"
+
       if moves(:sliding).include?(current_move)
         self.perform_slide(current_move)
         break
+
       elsif moves(:jumping).include?(current_move)
         self.perform_jump(current_move)
+
       else
-        raise IllegalMoveError, "#{self.inspect} can't get to #{current_move}!"
+        raise IllegalMoveError, "#{self.inspect} (from #{origin}) can't get to #{current_move}!"
       end
     end
   end
@@ -108,6 +116,7 @@ class Piece
   end
 
   def enemy?(other_piece)
+    return false if other_piece.color == :empty
     self.color != other_piece.color
   end
 

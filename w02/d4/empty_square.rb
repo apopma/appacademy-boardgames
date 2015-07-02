@@ -3,8 +3,8 @@ class EmptySquare
     " "
   end
 
-  def location
-    "nowhere"
+  def color
+    :empty
   end
 
   def empty?
@@ -12,10 +12,6 @@ class EmptySquare
   end
 
   def king?
-    false
-  end
-
-  def enemy?(_)
     false
   end
 
