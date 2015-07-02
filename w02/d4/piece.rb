@@ -1,4 +1,4 @@
-require_relative 'board'
+require 'colorize'
 
  MOVE_DIFFS = {
    :red => [[1, 1], [1, -1]],
@@ -6,7 +6,7 @@ require_relative 'board'
  }
 
 class Piece
-  attr_reader :color
+  attr_reader :color, :id
   attr_accessor :pos, :board, :king
 
   def initialize(pos, board, color)
@@ -14,6 +14,7 @@ class Piece
     @board = board
     @color = color # either :red or :black
     @king = false
+    @id = "●"
   end
 
   def move_diffs
@@ -55,6 +56,7 @@ class Piece
 
   def king_me!
     @king = true
+    @id = '◉'
   end
 
   def empty?
@@ -65,6 +67,9 @@ class Piece
     king ? true : false
   end
 
+  def to_s
+    id.colorize(color)
+  end
 end
 
 
