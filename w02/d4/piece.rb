@@ -5,6 +5,11 @@ require 'colorize'
    :black => [[1, 1], [-1, -1]]
  }
 
+ JUMP_DIFFS = {
+   :red => [[-2, 2], [2, -2]],
+   :black => [[2, 2], [-2, -2]]
+ }
+
 class Piece
   attr_reader :color, :id
   attr_accessor :pos, :board, :king
@@ -23,6 +28,12 @@ class Piece
     diffs
   end
 
+  def jump_diffs
+    diffs = JUMP_DIFFS[color]
+    diffs += JUMP_DIFFS[other_color] if king?
+    diffs
+  end
+
   def moves
     row, col = pos
     all_moves = []
@@ -30,29 +41,54 @@ class Piece
     move_diffs.each do |diff|
       drow, dcol = diff
       new_move = [row + drow, col + dcol]
-      puts
-      p "possible new move #{new_move}"
       all_moves << new_move if valid_move?(new_move)
     end
 
     all_moves
   end
 
-  def perform_slide(destination)
-    puts "moving #{self.color} from #{self.pos} to #{destination}..."
-    puts "possible moves #{moves}"
-    raise IllegalMoveError unless moves.include?(destination)
+  def jumps
+    row, col = pos
+    all_jumps = []
+
+    jump_diffs.each do |diff|
+      drow, dcol = diff
+      new_move = [row + drow, col + dcol]
+
+      puts
+      all_jumps << new_move if valid_move?(new_move)
+    end
+  end
+
+  def perform_slide(destination) #doesn't really need an origin?
+    unless moves.include?(destination)
+      raise IllegalMoveError, "#{self.inspect} can't move to #{destination}!"
+    end
+
     board.remove_piece(pos)
     self.pos = destination
     board[destination] = self
   end
 
-  def perform_jump
+  def perform_jump(origin, destination)
+    orow, ocol = origin.pos
+    drow, dcol = destination
+
+    row_diff = (drow - orow) - 1
+    col_diff = (dcol - ocol) - 1
+    between_piece = board[[(drow - row_diff), (dcol - col_diff)]]
+
+    p "#{origin.inspect} jumping to #{destination}"
+    p "dest - origin: [#{drow - orow}, #{dcol - ocol}]"
+    p "origin - dest: [#{orow - drow}, #{ocol - dcol}]"
+    p "between diffs are [#{row_diff}, #{col_diff}]"
+    p "between piece should be #{between_piece.inspect}"
+    puts
+
+
   end
 
   def valid_move?(pos)
-    p "#{pos} on board? #{move_on_board?(pos)}"
-    p "#{board[pos]} is: #{board[pos].inspect}"
     move_on_board?(pos) && board[pos].empty?
   end
 
@@ -82,11 +118,7 @@ class Piece
   end
 
   def inspect
-    if self.king?
-      "#{color} king at #{pos}"
-    else
-      "#{color} piece at #{pos}"
-    end
+    self.king? ? "#{color} king at #{pos}" : "#{color} piece at #{pos}"
   end
 end
 

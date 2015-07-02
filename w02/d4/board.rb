@@ -69,8 +69,8 @@ end
 
 b = Board.new
 b.setup
+b[[2, 1]].perform_slide([3, 0])
+b[[5, 2]].perform_slide([4, 1])
 b.render
 
-sleep(1)
-b[[2, 1]].perform_slide([3, 0])
-b.render
+b[[3, 0]].perform_jump(b[[3, 0]], [5, 2])
