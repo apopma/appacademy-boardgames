@@ -7,7 +7,14 @@ class Board
     @grid = Array.new(8) { Array.new(8) { EmptySquare.new } }
   end
 
-end
+  def [](pos)
+    row, col = pos
+    grid[row][col]
+  end
 
-b = Board.new
-p b.grid.flatten.size
+  def []=(pos, piece)
+    row, col = pos
+    grid[row][col] = piece
+  end
+
+end

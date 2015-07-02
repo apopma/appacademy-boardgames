@@ -1,3 +1,5 @@
+require_relative 'board'
+
 class Piece
   attr_accessor :pos, :king
 
@@ -19,12 +21,16 @@ class Piece
     regular_moves + king_move_diffs
   end
 
-  def king_me
-    king = true
+  def king_me!
+    @king = true
+  end
+
+  def empty?
+    false
   end
 
   def king?
-    false unless king
+    king ? true : false
   end
 
 end
