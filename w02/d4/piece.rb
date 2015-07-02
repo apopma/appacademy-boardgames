@@ -96,7 +96,7 @@ class Piece
   end
 
   def inspect
-    self.king? ? "#{color} king at #{location}" : "#{color} piece at #{location}"
+    king? ? "#{color} king at #{location}" : "#{color} piece at #{location}"
   end
 end
 
