@@ -1,7 +1,7 @@
 require 'colorize'
 
- MOVE_DIFFS = { :red => [[1, 1], [1, -1]], :black => [[-1, 1],  [-1, -1]] }
- JUMP_DIFFS = { :red => [[2, 2],  [2, -2]], :black => [[-2, 2], [-2, -2]] }
+ MOVE_DIFFS = { :red => [[1, 1], [1, -1]], :black => [[-1, 1], [-1, -1]] }
+ JUMP_DIFFS = { :red => [[2, 2], [2, -2]], :black => [[-2, 2], [-2, -2]] }
 
 class Piece
   attr_reader :color, :id, :king_row
