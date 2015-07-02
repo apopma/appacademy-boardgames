@@ -6,16 +6,16 @@ require 'colorize'
  }
 
  JUMP_DIFFS = {
-   :red => [[-2, 2], [2, -2]],
-   :black => [[2, 2], [-2, -2]]
+   :red => [[2, 2], [2, -2]],
+   :black => [[-2, 2], [-2, -2]]
  }
 
 class Piece
   attr_reader :color, :id
-  attr_accessor :pos, :board, :king
+  attr_accessor :location, :board, :king
 
-  def initialize(pos, board, color)
-    @pos = pos
+  def initialize(location, board, color)
+    @location = location
     @board = board
     @color = color # either :red or :black
     @king = false
@@ -35,7 +35,7 @@ class Piece
   end
 
   def moves
-    row, col = pos
+    row, col = location
     all_moves = []
 
     move_diffs.each do |diff|
@@ -48,44 +48,45 @@ class Piece
   end
 
   def jumps
-    row, col = pos
+    row, col = location
     all_jumps = []
 
     jump_diffs.each do |diff|
       drow, dcol = diff
-      new_move = [row + drow, col + dcol]
-
-      puts
+      new_move = [(row + drow), (col + dcol)]
       all_jumps << new_move if valid_move?(new_move)
     end
+
+    all_jumps
+  end
+
+  def move_to(destination)
+    board.remove_piece(location)
+    @location = destination #local var without the self?
+    board[destination] = self
   end
 
   def perform_slide(destination) #doesn't really need an origin?
     unless moves.include?(destination)
-      raise IllegalMoveError, "#{self.inspect} can't move to #{destination}!"
+      raise IllegalMoveError, "\n#{self.inspect} can't move to #{destination}!"
     end
 
-    board.remove_piece(pos)
-    self.pos = destination
-    board[destination] = self
+    move_to(destination)
   end
 
-  def perform_jump(origin, destination)
-    orow, ocol = origin.pos
-    drow, dcol = destination
+  def perform_jump(piece, destination)
+    unless jumps.include?(destination)
+      raise IllegalMoveError, "\n#{self.inspect} can't jump to #{destination}!"
+    end
 
+    orow, ocol = location
+    drow, dcol = destination
     row_diff = (drow - orow) - 1
     col_diff = (dcol - ocol) - 1
     between_piece = board[[(drow - row_diff), (dcol - col_diff)]]
 
-    p "#{origin.inspect} jumping to #{destination}"
-    p "dest - origin: [#{drow - orow}, #{dcol - ocol}]"
-    p "origin - dest: [#{orow - drow}, #{ocol - dcol}]"
-    p "between diffs are [#{row_diff}, #{col_diff}]"
-    p "between piece should be #{between_piece.inspect}"
-    puts
-
-
+    move_to(destination)
+    board.remove_piece(between_piece.location)
   end
 
   def valid_move?(pos)
@@ -118,23 +119,13 @@ class Piece
   end
 
   def inspect
-    self.king? ? "#{color} king at #{pos}" : "#{color} piece at #{pos}"
+     if self.king?
+       "#{color} king at #{location}"
+     else
+       "#{color} piece at #{location}"
+     end
   end
 end
 
 class IllegalMoveError < RuntimeError
 end
-
-
-# rp = Piece.new([0, 1], b, :red)
-# bp = Piece.new([5, 2], b, :black)
-#
-# p "#{rp.pos} moves to #{rp.moves}"
-# p "#{bp.pos} moves to #{bp.moves}"
-#
-# rp.king_me!
-# bp.king_me!
-#
-# puts "kings:"
-# p "#{rp.pos} moves to #{rp.moves}"
-# p "#{bp.pos} moves to #{bp.moves}"
