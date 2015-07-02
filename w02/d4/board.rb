@@ -44,6 +44,17 @@ class Board
     end
   end
 
+  def dup
+    duped_board = Board.new
+
+    grid.each_with_index do |row, ridx|
+      row.each_with_index do |square, cidx|
+        duped_pos = [ridx, cidx]
+        duped_board[duped_pos] = square.dup(duped_board)
+      end
+    end
+  end
+
   def [](pos)
     row, col = pos
     grid[row][col]
@@ -53,7 +64,6 @@ class Board
     row, col = pos
     grid[row][col] = piece
   end
-
 
   private
   def setup_odd_row(row, color)
@@ -69,10 +79,18 @@ end
 
 b = Board.new
 b.setup
-b[[2, 1]].perform_slide([3, 0])
-b[[5, 2]].perform_slide([4, 1])
+p1 = b[[2, 1]]
+p2 = b[[5, 2]]
+
+p1.perform_slide([3, 0])
+p2.perform_slide([4, 1])
 b.render
 sleep(0.5)
 
-b[[3, 0]].perform_jump(b[[3, 0]], [5, 2])
+b[[3, 0]].perform_jump([5, 2])
 b.render
+
+sleep(0.5)
+b[[0, 1]].king_me!
+b.render
+puts b[[0, 1]].inspect
