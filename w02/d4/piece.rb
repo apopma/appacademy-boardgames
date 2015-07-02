@@ -7,11 +7,11 @@ class Piece
   attr_reader :color, :id
   attr_accessor :location, :board, :king
 
-  def initialize(location, board, color)
+  def initialize(location, board, color, king = false)
     @location = location
     @board = board
     @color = color # either :red or :black
-    @king = false
+    @king = king
     @id = "●"
   end
 
@@ -53,9 +53,9 @@ class Piece
     move_to(destination)
   end
 
-  def perform_jump(piece, destination)
+  def perform_jump(destination)
     #gets the average of origin/destination poses, then refs Board at that pos
-    between = piece.location.zip(destination).map { |row, col| (row + col) / 2 }
+    between = location.zip(destination).map { |row, col| (row + col) / 2 }
     between_piece = board[between]
 
     unless moves(:jumping).include?(destination) && enemy?(between_piece)
@@ -64,6 +64,11 @@ class Piece
 
     move_to(destination)
     board.remove_piece(between_piece.location)
+  end
+
+  def perform_moves!(move_seq)
+    p "performing #{move_seq}..."
+
   end
 
   def valid_move?(pos)
@@ -101,6 +106,10 @@ class Piece
 
   def inspect
     king? ? "#{color} king at #{location}" : "#{color} piece at #{location}"
+  end
+
+  def dup(duped_board)
+    Piece.new(self.location, duped_board, self.color, self.king)
   end
 end
 
