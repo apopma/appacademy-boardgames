@@ -11,6 +11,10 @@ class Board
     @moves_at_selection = []
   end
 
+  def cursor_info
+    [selected_pos, cursor_pos]
+  end
+
   def setup
     setup_odd_row(0, :red)
     setup_even_row(1, :red)

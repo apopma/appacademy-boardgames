@@ -77,11 +77,14 @@ class Piece
     until move_seq.empty?
       current_move = move_seq.shift
 
-      if moves(:sliding).include?(current_move)
+      p "#{current_move} is a slide? #{slide?(current_move)}"
+      p "is a jump? #{jump?(current_move)}"
+
+      if slide?(current_move)
         self.perform_slide(current_move)
         break
 
-      elsif moves(:jumping).include?(current_move)
+      elsif jump?(current_move)
         self.perform_jump(current_move)
 
       else
@@ -95,19 +98,31 @@ class Piece
       duped_board = board.dup
       duped_piece = duped_board[location]
       duped_piece.perform_moves!(*move_seq) #needs the splat also
-    rescue IllegalMoveError
-      # puts "Not a valid sequence!"
+
+    rescue IllegalMoveError => e
+      puts "VMS? error: #{e.message}"
       return false
-    ensure
-      # puts "Done with move checking."
     end
 
-    # puts "Valid!"
     true
   end
 
   def valid_move?(pos)
     move_on_board?(pos) && board[pos].empty?
+  end
+
+  def slide?(move)
+    orow, ocol = location
+    drow, dcol = move
+    return true if [(orow - drow).abs, (ocol - dcol).abs].any? { |val| val == 1}
+    false
+  end
+
+  def jump?(move)
+    orow, ocol = location
+    drow, dcol = move
+    return true if [(orow - drow).abs, (ocol - dcol).abs].any? { |val| val == 2}
+    false
   end
 
   def valid_jump?(pos)

@@ -12,7 +12,7 @@ class Player
       input = $stdin.getch
       raise QuitGame if input == "p"
 
-      unless ['w', 'a', 's', 'd', ' ', "\r", "q"].include?(input)
+      unless ['w', 'a', 's', 'd', ' ', "\r"].include?(input)
         raise InputError.new
       end
 

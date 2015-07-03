@@ -41,6 +41,7 @@ class CheckersGame
     message += "\nPress P to quit."
 
     input = get_player_input(message)
+    board[input.first].perform_moves(input.last)
   end
 
   def get_player_input(message)
