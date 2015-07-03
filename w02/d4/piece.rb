@@ -77,9 +77,6 @@ class Piece
     until move_seq.empty?
       current_move = move_seq.shift
 
-      p "#{current_move} is a slide? #{slide?(current_move)}"
-      p "is a jump? #{jump?(current_move)}"
-
       if slide?(current_move)
         self.perform_slide(current_move)
         break
