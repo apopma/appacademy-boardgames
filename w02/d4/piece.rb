@@ -29,6 +29,7 @@ class Piece
   end
 
   def moves
+    p 'called `moves`'
     row, col = location
     diffs = move_diffs + jump_diffs
 
@@ -36,6 +37,7 @@ class Piece
       new_move = [row + drow, col + dcol]
     end
 
+    p all_moves
     all_moves.select { |move| valid_move?(move) ^ valid_jump?(move) }
   end
 
@@ -105,6 +107,7 @@ class Piece
   end
 
   def valid_move?(pos)
+    p "called `valid_move?`"
     move_on_board?(pos) && board[pos].empty?
   end
 
@@ -123,6 +126,7 @@ class Piece
   end
 
   def valid_jump?(pos)
+    p "called `valid_jump?`"
     between = location.zip(pos).map { |row, col| (row + col) / 2 }
     return false unless move_on_board?(between)
     between_piece = board[between]

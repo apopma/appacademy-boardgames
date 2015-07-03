@@ -89,6 +89,11 @@ class Board
     self.cursor_pos = new_pos if self.move_on_board?(new_pos)
   end
 
+  def valid_move?(input) # [origin, destination]
+    origin, dest = input
+    move_on_board?(dest) && (self[origin].slide?(dest) || self[origin].jump?(dest))
+  end
+
   def move_on_board?(pos)
     pos.all? { |elem| elem.between?(0, 7) }
   end

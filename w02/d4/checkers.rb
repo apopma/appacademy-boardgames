@@ -8,11 +8,12 @@ KEYBINDINGS = {
 }
 
 class CheckersGame
-  attr_accessor :board, :players
+  attr_accessor :board, :players, :input
 
   def initialize
     @board = Board.new
     @players = [Player.new(:black), Player.new(:red)]
+    @input = nil
     board.setup
   end
 
@@ -40,12 +41,19 @@ class CheckersGame
     message += "\nWASD to move, Space to select, Enter to make move."
     message += "\nPress P to quit."
 
-    input = get_player_input(message)
-    board[input.first].perform_moves(input.last)
+    loop do
+      @input = get_player_input(message)
+      p "Recieved #{@input} from cursor."
+      break if board.valid_move?(input)
+    end
+
+    board[@input.first].perform_moves(@input.last)
+    next_player
   end
 
   def get_player_input(message)
     board.reset_selection
+    self.reset_input
     loop do
       input = input_from_cursor(message)
       return input if input
@@ -72,6 +80,10 @@ class CheckersGame
       move_cursor(KEYBINDINGS[input])
       return nil
     end
+  end
+
+  def reset_input
+    @input = nil
   end
 
   def move_cursor(diff)
