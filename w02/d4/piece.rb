@@ -131,7 +131,7 @@ class Piece
     return false unless move_on_board?(between)
     between_piece = board[between]
 
-    enemy?(between_piece) && moves.include?(destination)
+    enemy?(between_piece) #&& moves.include?(destination) this infinitely loops
   end
 
   def move_on_board?(pos)
