@@ -28,16 +28,15 @@ class Piece
     diffs
   end
 
-  def moves(type)
-    raise ArgumentError unless [:sliding, :jumping].include?(type)
+  def moves
     row, col = location
-    diffs = (type == :sliding) ? move_diffs : jump_diffs
+    diffs = move_diffs + jump_diffs
 
     all_moves = diffs.map do |drow, dcol|
       new_move = [row + drow, col + dcol]
     end
 
-    all_moves.select { |move| valid_move?(move) }
+    all_moves.select { |move| valid_move?(move) ^ valid_jump?(move) }
   end
 
   def move_to(destination)
@@ -48,7 +47,7 @@ class Piece
   end
 
   def perform_slide(destination)
-    unless moves(:sliding).include?(destination)
+    unless moves.include?(destination)
       raise IllegalMoveError, "\n#{self.inspect} can't move to #{destination}!"
     end
 
@@ -60,7 +59,7 @@ class Piece
     between = location.zip(destination).map { |row, col| (row + col) / 2 }
     between_piece = board[between]
 
-    unless enemy?(between_piece) && moves(:jumping).include?(destination)
+    unless enemy?(between_piece) && moves.include?(destination)
       raise IllegalMoveError, "\n#{self.inspect} can't jump to #{destination}!"
     end
 
@@ -109,6 +108,14 @@ class Piece
 
   def valid_move?(pos)
     move_on_board?(pos) && board[pos].empty?
+  end
+
+  def valid_jump?(pos)
+    between = location.zip(pos).map { |row, col| (row + col) / 2 }
+    return false unless move_on_board?(between)
+    between_piece = board[between]
+
+    enemy?(between_piece) && moves.include?(destination)
   end
 
   def move_on_board?(pos)
