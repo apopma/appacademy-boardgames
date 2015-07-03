@@ -2,10 +2,13 @@ require_relative 'empty_square'
 require_relative 'piece'
 
 class Board
-  attr_accessor :grid
+  attr_accessor :grid, :cursor_pos, :selected_pos, :moves_at_selection
 
   def initialize
     @grid = Array.new(8) { Array.new(8) { EmptySquare.new } }
+    @cursor_pos= [5, 4]
+    @selected_pos = nil
+    @moves_at_selection = []
   end
 
   def setup
@@ -36,7 +39,13 @@ class Board
     #copied over from chess
     square = " #{elem.to_s} "
 
-    if (ridx + cidx) % 2 == 0
+    if cursor_pos == [ridx, cidx]
+      print square.on_green
+    elsif selected_pos == [ridx, cidx]
+      print square.on_magenta
+    elsif moves_at_selection.include?([ridx, cidx])
+      print square.on_yellow
+    elsif (ridx + cidx) % 2 == 0
       print square.on_light_red
     else
       print square.on_light_black
@@ -54,6 +63,30 @@ class Board
     end
 
     duped_board
+  end
+
+  def reset_selection
+    @selected_pos = nil
+    @moves_at_selection = []
+  end
+
+  def select_pos(players_color)
+    if self[cursor_pos].color == players_color
+      @selected_pos = cursor_pos
+      @moves_at_selection = self[cursor_pos].moves
+    end
+  end
+
+  def move_cursor(diff)
+    drow, dcol = diff
+    row, col = cursor_pos
+
+    new_pos = [row + drow, col + dcol]
+    self.cursor_pos = new_pos if self.move_on_board?(new_pos)
+  end
+
+  def move_on_board?(pos)
+    pos.all? { |elem| elem.between?(0, 7) }
   end
 
   def [](pos)

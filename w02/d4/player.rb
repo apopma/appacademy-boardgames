@@ -6,9 +6,7 @@ class Player
   def initialize(color)
     @color = color
   end
-end
 
-class HumanPlayer < Player
   def get_input
     begin
       input = $stdin.getch
