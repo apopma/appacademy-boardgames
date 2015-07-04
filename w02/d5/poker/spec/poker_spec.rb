@@ -1,0 +1,2 @@
+require 'poker'
+require 'rspec'
