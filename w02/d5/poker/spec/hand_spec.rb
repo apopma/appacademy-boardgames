@@ -2,32 +2,34 @@ require 'hand'
 require 'rspec'
 
 describe Hand do
-  let(:s2) { double('s2', :value => :two, :suit => :spades) }
-  let(:s3) { double('s3', :value => :three, :suit => :spades) }
-  let(:s4) { double('s4', :value => :four, :suit => :spades) }
-  let(:s5) { double('s5', :value => :five, :suit => :spades) }
-  let(:s6) { double('s6', :value => :six, :suit => :spades) }
-  let(:s7) { double('s7', :value => :seven, :suit => :spades) }
-  let(:s8) { double('s8', :value => :eight, :suit => :spades) }
-  let(:s9) { double('s9', :value => :nine, :suit => :spades) }
+  let(:s2)  { double('s2', :value => :two, :suit => :spades) }
+  let(:s3)  { double('s3', :value => :three, :suit => :spades) }
+  let(:s4)  { double('s4', :value => :four, :suit => :spades) }
+  let(:s5)  { double('s5', :value => :five, :suit => :spades) }
+  let(:s6)  { double('s6', :value => :six, :suit => :spades) }
+  let(:s7)  { double('s7', :value => :seven, :suit => :spades) }
+  let(:s8)  { double('s8', :value => :eight, :suit => :spades) }
+  let(:s9)  { double('s9', :value => :nine, :suit => :spades) }
   let(:s10) { double('s10', :value => :ten, :suit => :spades) }
-  let(:sj) { double('sj', :value => :jack, :suit => :spades) }
-  let(:sq) { double('sq', :value => :queen, :suit => :spades) }
-  let(:sk) { double('sk', :value => :king, :suit => :spades) }
-  let(:sa) { double('sa', :value => :ace, :suit => :spades) }
+  let(:sj)  { double('sj', :value => :jack, :suit => :spades) }
+  let(:sq)  { double('sq', :value => :queen, :suit => :spades) }
+  let(:sk)  { double('sk', :value => :king, :suit => :spades) }
+  let(:sa)  { double('sa', :value => :ace, :suit => :spades) }
 
-  let(:h3) { double('h3', :value => :three, :suit => :hearts) }
-  let(:h4) { double('h4', :value => :four, :suit => :hearts) }
-  let(:h7) { double('h7', :value => :seven, :suit => :hearts) }
-  let(:hq) { double('hq', :value => :queen, :suit => :hearts) }
+  let(:h3)  { double('h3', :value => :three, :suit => :hearts) }
+  let(:h4)  { double('h4', :value => :four, :suit => :hearts) }
+  let(:h7)  { double('h7', :value => :seven, :suit => :hearts) }
+  let(:hq)  { double('hq', :value => :queen, :suit => :hearts) }
+  let(:ha)  { double('ha', :value => :ace, :suit => :hearts) }
 
-  let(:d4) { double('c3', :value => :four, :suit => :diamonds) }
-  let(:d7) { double('d7', :value => :seven, :suit => :diamonds) }
-  let(:dq) { double('dq', :value => :queen, :suit => :diamonds) }
+  let(:d4)  { double('c3', :value => :four, :suit => :diamonds) }
+  let(:d7)  { double('d7', :value => :seven, :suit => :diamonds) }
+  let(:dq)  { double('dq', :value => :queen, :suit => :diamonds) }
   let(:d10) { double('d10', :value => :ten, :suit => :diamonds) }
 
-  let(:c7) { double('c7', :value => :seven, :suit => :clubs) }
-  let(:cq) { double('cq', :value => :queen, :suit => :clubs) }
+  let(:c7)  { double('c7', :value => :seven, :suit => :clubs) }
+  let(:cq)  { double('cq', :value => :queen, :suit => :clubs) }
+  let(:c10) { double('c10', :value => :ten, :suit => :clubs) }
 
   subject(:royal_flush_hand)     { Hand.new([s10, sj, sq, sk, sa]) }
   subject(:straight_flush_hand)  { Hand.new([s3, s4, s5, s6, s7]) }
@@ -189,6 +191,7 @@ describe Hand do
     context "a full house" do
       # subject(:full_house_hand)      { Hand.new([s7, h7, d7, sq, hq]) }
       subject(:queens_and_sevens_hand) { Hand.new([sq, hq, dq, c7, d7]) }
+      subject(:sevens_and_aces_hand)   { Hand.new([s7, h7, d7, sa, ha]) }
 
       it "beats a flush" do
         expect(full_house_hand.beats?(flush_hand)).to be true
@@ -197,6 +200,12 @@ describe Hand do
       it "loses to a higher full house" do
         expect(full_house_hand.beats?(queens_and_sevens_hand)).to be false
       end
+
+      it "breaks ties with two-of-a-kind if three-of-a-kind match" do
+        expect(sevens_and_aces_hand.beats?(full_house_hand)).to be true
+      end
+
+
     end
 
     context "a flush" do
